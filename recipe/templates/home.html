@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recipe Website</title>
+</head>
+<body>
+    <h1>Welcome to the Recipe Website!</h1>
+    <p>This is the main page</p>
+    <h2>Latest Recipes</h2>
+{% for recipe in recipes %}
+    <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+        <h3>{{ recipe.title }}</h3>
+        <p><strong>By:</strong> {{ recipe.author.username }}</p>
+        <p><strong>Ingredients:</strong> {{ recipe.ingredients[:100] }}{% if recipe.ingredients|length > 100 %}...{% endif %}</p>
+        <p><strong>Instructions:</strong> {{ recipe.instructions[:100] }}{% if recipe.instructions|length > 100 %}...{% endif %}</p>
+        <p><small>Posted on {{ recipe.created_at.strftime('%Y-%m-%d %H:%M') }}</small></p>
+    </div>
+{% else %}
+    <p>No recipes yet. Be the first to add one!</p>
+{% endfor %}
+    
+    {% if current_user.is_authenticated %}
+    <p><a href="{{ url_for('add_recipe') }}">Add a Recipe</a></p>
+    <p>Hello, {{ current_user.username }}! <a href="{{ url_for('logout') }}">Logout</a></p>
+    {% else %}
+        <p><a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Register</a> to start sharing recipes.</p>
+    {% endif %}
+</body>
+</html>
