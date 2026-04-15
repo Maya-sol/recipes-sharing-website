@@ -1,10 +1,11 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from datetime import datetime
+from sqlalchemy import or_, func
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'My SecRet Key'
@@ -113,6 +114,25 @@ def add_recipe():
         return redirect(url_for('home'))
     return render_template('add.html', form=form)
 
+@app.route('/search')
+def search():
+    query = request.args.get('q', '')
+    if query:
+        recipes = Recipe.query.filter(
+            or_(
+                func.lower(Recipe.title).contains(func.lower(query)),
+                func.lower(Recipe.ingredients).contains(func.lower(query)),
+                func.lower(Recipe.instructions).contains(func.lower(query))
+            )
+        ).order_by(Recipe.created_at.desc()).all()
+    else:
+        recipes = []
+    return render_template('search.html', recipes=recipes, query=query)
+
+@app.route('/recipe/<int:recipe_id>')
+def view_recipe(recipe_id):
+    recipe = Recipe.query.get_or_404(recipe_id)
+    return render_template('view_recipe.html', recipe=recipe)
 
 if __name__ == "__main__":
     app.run(debug=True)
