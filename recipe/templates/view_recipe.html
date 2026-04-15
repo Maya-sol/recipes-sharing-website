@@ -37,9 +37,6 @@
         
         <a href="{{ url_for('home') }}" class="back-link">← Back to Recipes</a>
         
-        {% if current_user.is_authenticated and current_user.id == recipe.user_id %}
-            <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" style="margin-left: 10px;" class="back-link">Edit Recipe</a>
-        {% endif %}
     </div>
 </body>
 </html>
