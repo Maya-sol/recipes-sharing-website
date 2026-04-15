@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ recipe.title }} - Recipe Website</title>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            | <a href="{{ url_for('add_recipe') }}">Add Recipe</a>
+            | <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
+        {% else %}
+            | <a href="{{ url_for('login') }}">Login</a>
+            | <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+        | <a href="{{ url_for('search') }}?q=">Search</a>
+    </div>
+
+    <div class="recipe-container">
+        <div class="recipe-header">
+            <h1>{{ recipe.title }}</h1>
+            <div class="recipe-meta">
+                <strong>By:</strong> {{ recipe.author.username }} | 
+                <strong>Posted on:</strong> {{ recipe.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </div>
+        </div>
+        
+        <div class="recipe-section">
+            <h3>📝 Ingredients</h3>
+            <div style="white-space: pre-line;">{{ recipe.ingredients }}</div>
+        </div>
+        
+        <div class="recipe-section">
+            <h3>👨‍🍳 Instructions</h3>
+            <div style="white-space: pre-line;">{{ recipe.instructions }}</div>
+        </div>
+        
+        <a href="{{ url_for('home') }}" class="back-link">← Back to Recipes</a>
+        
+        {% if current_user.is_authenticated and current_user.id == recipe.user_id %}
+            <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" style="margin-left: 10px;" class="back-link">Edit Recipe</a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -7,6 +7,21 @@
     <h1>Welcome to the Recipe Website!</h1>
     <p>This is the main page</p>
     <h2>Latest Recipes</h2>
+
+    {% if current_user.is_authenticated %}
+    <p><a href="{{ url_for('add_recipe') }}">Add a Recipe</a></p>
+    <p>Hello, {{ current_user.username }}! <a href="{{ url_for('logout') }}">Logout</a></p>
+    {% else %}
+        <p><a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Register</a> to start sharing recipes.</p>
+    {% endif %}
+
+    <div class="search-container">
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+            <input type="text" name="q" class="search-input" placeholder="Search recipes by title, ingredients, or instructions..." value="{{ request.args.get('q', '') }}">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </div>
+    
 {% for recipe in recipes %}
     <div style="border:1px solid #ccc; margin:10px; padding:10px;">
         <h3>{{ recipe.title }}</h3>
@@ -19,11 +34,5 @@
     <p>No recipes yet. Be the first to add one!</p>
 {% endfor %}
     
-    {% if current_user.is_authenticated %}
-    <p><a href="{{ url_for('add_recipe') }}">Add a Recipe</a></p>
-    <p>Hello, {{ current_user.username }}! <a href="{{ url_for('logout') }}">Logout</a></p>
-    {% else %}
-        <p><a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Register</a> to start sharing recipes.</p>
-    {% endif %}
 </body>
 </html>
