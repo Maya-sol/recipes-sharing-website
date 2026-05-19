@@ -20,10 +20,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.7"
 
       - name: Install dependencies
-        run: pip install flask flask-sqlalchemy flask-wtf flask-login pytest
+        run: pip install flask flask-sqlalchemy flask-wtf flask-login pytest ruff
+
+      - name: Run linter
+        run: python -m ruff check .
 
       - name: Run tests
         run: pytest test.py -v
