@@ -1,9 +1,21 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import *
+from wtforms import (
+    StringField,
+    PasswordField,
+    TextAreaField,
+    SubmitField
+)
 from wtforms.validators import DataRequired, Length, EqualTo
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
+from flask_login import (
+    LoginManager,
+    login_user,
+    logout_user,
+    login_required,
+    current_user,
+    UserMixin
+)
 from datetime import datetime
 from sqlalchemy import or_, func
 import os
@@ -44,10 +56,13 @@ class Recipe(db.Model):
     author = db.relationship('User', backref='recipes')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(min=3, max=20)])
     email = StringField('Email', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=4, max=12)])
-    confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField('Password', validators=[DataRequired(),
+                                                     Length(min=4, max=12)])
+    confirm = PasswordField('Confirm Password', validators=[DataRequired(),
+                                                            EqualTo('password')])
     submit = SubmitField('Register')
 
 class LoginForm(FlaskForm):
@@ -66,7 +81,7 @@ def home():
     recipes = Recipe.query.order_by(Recipe.created_at.desc()).all()
     return render_template('home.html', recipes=recipes)
 
-@app.route('/register', methods=['GET', 'POST']) 
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -76,7 +91,7 @@ def register():
         db.session.commit()
         print("User added successfully!")
         flash('Registration successful! You can now log in.', 'success')
-        return redirect(url_for('login')) 
+        return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -93,7 +108,7 @@ def login():
     return render_template('login.html', form=form)
 
 @app.route('/logout')
-@login_required 
+@login_required
 def logout():
     logout_user()
     flash('You have been logged out.', 'info')
