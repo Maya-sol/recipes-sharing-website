@@ -20,23 +20,23 @@
         <div class="recipe-header">
             <h1>{{ recipe.title }}</h1>
             <div class="recipe-meta">
-                <strong>By:</strong> {{ recipe.author.username }} | 
+                <strong>By:</strong> {{ recipe.author.username }} |
                 <strong>Posted on:</strong> {{ recipe.created_at.strftime('%Y-%m-%d %H:%M') }}
             </div>
         </div>
-        
+
         <div class="recipe-section">
             <h3>📝 Ingredients</h3>
             <div style="white-space: pre-line;">{{ recipe.ingredients }}</div>
         </div>
-        
+
         <div class="recipe-section">
             <h3>👨‍🍳 Instructions</h3>
             <div style="white-space: pre-line;">{{ recipe.instructions }}</div>
         </div>
-        
+
         <a href="{{ url_for('home') }}" class="back-link">← Back to Recipes</a>
-        
+
     </div>
 </body>
 </html>
