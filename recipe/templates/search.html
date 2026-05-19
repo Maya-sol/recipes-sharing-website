@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results - Recipe Website</title>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            | <a href="{{ url_for('add_recipe') }}">Add Recipe</a>
+            | <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
+        {% else %}
+            | <a href="{{ url_for('login') }}">Login</a>
+            | <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </div>
+
+    <h1>Search Results</h1>
+    
+    <!-- Search Section -->
+    <div class="search-container">
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+            <input type="text" name="q" class="search-input" placeholder="Search recipes..." value="{{ query }}">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </div>
+    
+    <h2>Results for "{{ query }}"</h2>
+    
+    {% if recipes %}
+        <p>Found {{ recipes|length }} recipe(s)</p>
+        {% for recipe in recipes %}
+        <div class="recipe-card">
+            <h3>{{ recipe.title }}</h3>
+            <p><strong>By:</strong> {{ recipe.author.username }}</p>
+            
+            <!-- Match badges -->
+            <div style="margin: 5px 0;">
+                {% if query.lower() in recipe.title.lower() %}
+                    <span class="match-badge match-title">Match in Title</span>
+                {% endif %}
+                {% if query.lower() in recipe.ingredients.lower() %}
+                    <span class="match-badge match-ingredients">Match in Ingredients</span>
+                {% endif %}
+                {% if query.lower() in recipe.instructions.lower() %}
+                    <span class="match-badge match-instructions">Match in Instructions</span>
+                {% endif %}
+            </div>
+            
+            <p><strong>Ingredients:</strong> {{ recipe.ingredients[:150] }}{% if recipe.ingredients|length > 150 %}...{% endif %}</p>
+            <p><strong>Instructions:</strong> {{ recipe.instructions[:150] }}{% if recipe.instructions|length > 150 %}...{% endif %}</p>
+            <p><small>Posted on {{ recipe.created_at.strftime('%Y-%m-%d %H:%M') }}</small></p>
+            <a href="{{ url_for('view_recipe', recipe_id=recipe.id) }}" class="view-link">View Full Recipe →</a>
+        </div>
+        {% endfor %}
+        
+        <a href="{{ url_for('home') }}" class="back-link">← Back to All Recipes</a>
+        
+    {% else %}
+        <div class="alert alert-info">
+            <p>No recipes found matching "{{ query }}".</p>
+            <p>Try different keywords or <a href="{{ url_for('home') }}">view all recipes</a>.</p>
+        </div>
+    {% endif %}
+    
+</body>
+</html>
